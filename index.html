@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div style="display: flex">
+        <a href="#sec3" style="margin: 2px">exp3</a>
+        <a href="#sec4" style="margin: 2px">exp4</a>
+        <a href="#sec5" style="margin: 2px">exp5</a>
+        <a href="#sec7" style="margin: 2px">exp7</a>
+        <a href="#sec8" style="margin: 2px">exp8</a>
+        <a href="#sec9" style="margin: 2px">exp9</a>
+        <a href="#sec10" style="margin: 2px">exp10</a>
+    </div>
+    <p>gcc filename.c -o filename<br>./filename</p>
+    <div class="cont" id="sec3">
+        <p class="head">Exp 3 - Server</p>
+        <p class="code">
+            
+                int main()
+                {
+                   int sd,bd,ad;
+                   char buff[1024];
+                   char buffc[1024];
+                   struct sockaddr_in cliaddr,servaddr;
+                   bzero(&servaddr,sizeof(servaddr));
+                   socklen_t clilen = sizeof(cliaddr);
+                   servaddr.sin_family = AF_INET;
+                   servaddr.sin_port = htons(2500);
+                   servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+                   
+                   sd = socket(AF_INET,SOCK_STREAM,0);
+                   printf("socket created\n");
+                   
+                   bd = bind(sd,(struct sockaddr*)&servaddr,sizeof(servaddr));
+                   printf("Binding Done\n");
+                   
+                   listen(sd,5);
+                   printf("Listening..\n");
+                   
+                   ad = accept(sd,(struct sockaddr*)&cliaddr,&clilen);
+                   
+                   while(1)
+                   {
+                       bzero(&buffc,strlen(buffc));
+                       recv(ad,buffc,sizeof(buffc),0);
+                       printf("Client : %s",buffc);
+                       printf("Enter text: ");
+                       fgets(buff,1024,stdin);
+                       send(ad,buff,sizeof(buff),0);
+                       
+                   }
+                   
+                   return 0;  
+                }
+        </p>
+        <p class="head">Client</p>
+        <p class="code">
+           
+                
+                int main()
+                {
+                   int sd,cd;
+                   char buff[1024];
+                   char buffs[1024];
+                   struct sockaddr_in cliaddr,servaddr;
+                   bzero(&servaddr,sizeof(servaddr));
+                   socklen_t clilen = sizeof(cliaddr);
+                   servaddr.sin_family = AF_INET;
+                   servaddr.sin_port = htons(2500);
+                   servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+                   
+                   sd = socket(AF_INET,SOCK_STREAM,0);
+                   printf("client socket created\n");
+                   
+                   cd = connect(sd,(struct sockaddr*)&servaddr,sizeof(servaddr));
+                   printf("Connected to the server\n");
+                   
+                   while(1)
+                   {
+                       printf("Enter text : ");
+                       fgets(buff,100,stdin);
+                       send(sd,buff,sizeof(buff),0);
+                       recv(sd,buffs,sizeof(buffs),0);
+                       printf("Server : %s\n",buffs);
+                   }
+                       return 0;
+                  }
+                
+                
+        </p>
+        
+            
+            
+            
+            
+    </div>
+
+    <div class="cont" id="sec4">
+        <p class="head">Exp 4 - Server</p>
+        <p class="code">
+            
+            int main()
+            {
+               int sd,bd,ad;
+               char buff[1024];
+               char buffc[1024];
+               struct sockaddr_in cliaddr,servaddr;
+               bzero(&servaddr,sizeof(servaddr));
+               socklen_t clilen = sizeof(cliaddr);
+               servaddr.sin_family = AF_INET;
+               servaddr.sin_port = htons(3500);
+               servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+               
+               sd = socket(AF_INET,SOCK_DGRAM,0);
+               printf("socket created\n");
+               
+               bd = bind(sd,(struct sockaddr*)&servaddr,sizeof(servaddr));
+               printf("Binding Done\n");
+               
+               
+               while(1)
+               {
+                   bzero(&buffc,strlen(buffc));
+                   recvfrom(ad,buffc,sizeof(buffc),0,(struct sockaddr*)&cliaddr,&clilen);
+                   printf("Client : %s\n",buffc);
+                   printf("Enter text: ");
+                   fgets(buff,1024,stdin);
+                   sendto(ad,buff,sizeof(buff),0,(struct sockaddr*)&cliaddr,clilen);
+                   
+               }
+               
+               return 0;
+               
+               
+               
+            }
+            
+        </p>
+        <p class="head">4 - Client</p>
+        <p class="code">
+           
+                
+            int main()
+            {
+               int sd,cd;
+               char buff[1024];
+               char buffs[1024];
+               struct sockaddr_in cliaddr,servaddr;
+               bzero(&servaddr,sizeof(servaddr));
+               socklen_t clilen = sizeof(cliaddr);
+               servaddr.sin_family = AF_INET;
+               servaddr.sin_port = htons(3500);
+               servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+               
+               sd = socket(AF_INET,SOCK_DGRAM,0);
+               printf("client socket created\n");
+               
+               cd = connect(sd,(struct sockaddr*)&servaddr,sizeof(servaddr));
+               printf("Connected to the server\n");
+               
+               while(1)
+               {
+                   printf("Enter text : ");
+                   fgets(buff,100,stdin);
+                   sendto(sd,buff,sizeof(buff),0,(struct sockaddr*)&servaddr,sizeof(servaddr));
+                   recvfrom(sd,buffs,sizeof(buffs),0,NULL,NULL);
+                   printf("Server : %s\n",buffs);
+               }
+                   return 0;
+              }
+            
+                
+                
+        </p>
+        
+            
+            
+            
+            
+    </div>
+
+    <div class="cont" id="sec5">
+        <p class="head">Exp 5 - Server</p>
+        <p class="code">
+            
+            int main()
+            {
+                int sd,bd,ad;
+                char buff[1024];
+                
+                struct sockaddr_in servaddr,cliaddr;
+                bzero(&servaddr,sizeof(servaddr));
+                socklen_t clilen = sizeof(cliaddr);
+                servaddr.sin_family = AF_INET;
+                servaddr.sin_port = htons(3100);
+                servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+                
+                sd = socket(AF_INET,SOCK_STREAM,0);
+                printf("Socket Created\n");
+                
+                bd = bind(sd,(struct sockaddr*)&servaddr,sizeof(servaddr));
+                printf("Binding done\n");
+                
+                listen(sd,5);
+                printf("Listening...\n");
+                
+                ad = accept(sd,(struct sockaddr*)&cliaddr,&clilen);
+                bzero(&buff,sizeof(buff));
+                printf("Request from client is received\n");
+                time_t currentTime;
+                currentTime = time(&currentTime);
+                send(ad,ctime(&currentTime),30,0);
+                printf("Response sent to client\n");
+                
+                return 0;
+                
+            }
+            
+            
+        </p>
+        <p class="head">5-Client</p>
+        <p class="code">
+           
+                
+            int main()
+            {
+                int sd,cd;
+                char buff[1024];
+                
+                struct sockaddr_in servaddr,cliaddr;
+                bzero(&servaddr,sizeof(servaddr));
+                socklen_t clilen = sizeof(cliaddr);
+                servaddr.sin_family = AF_INET;
+                servaddr.sin_port = htons(3100);
+                servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+                
+                sd = socket(AF_INET,SOCK_STREAM,0);
+                printf("Socket Created\n");
+                
+                cd = connect(sd,(struct sockaddr*)&servaddr,sizeof(servaddr));
+                printf("Connected to the server\n");
+                
+                bzero(&buff,sizeof(buff));
+                printf("Request sent to the server\n");
+                recv(sd,buff,1024,0);
+                printf("Response received from server :%s\n",buff);
+                return 0;
+                }
+            
+            
+                
+                
+        </p>
+        
+            
+            
+            
+            
+    </div>
+
+    <div class="cont" id="sec7">
+        <p class="head">Exp 7 - Server</p>
+        <p class="code">
+            
+            int main()
+            {
+                int sd,bd,ad;
+                char buff[1024];
+                char buffc[1024];
+                pid_t cpid;
+                struct sockaddr_in servaddr,cliaddr;
+                bzero(&servaddr,sizeof(servaddr));
+                
+                servaddr.sin_family = AF_INET;
+                servaddr.sin_port = htons(3300);
+                servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+                
+                socklen_t clilen = sizeof(cliaddr);
+                
+                sd = socket(AF_INET,SOCK_STREAM,0);
+                printf("Socket created\n");
+                
+                bd = bind(sd,(struct sockaddr*)&servaddr,sizeof(servaddr));
+                printf("Binding done...\n");
+                
+                listen(sd,5);
+                printf("Listening....\n");
+                
+                ad = accept(sd,(struct sockaddr*)&cliaddr,&clilen);
+                
+                cpid = fork();
+                if(cpid==0)
+                {
+                    while(1)
+                    {
+                        bzero(&buffc,sizeof(buffc));
+                        recv(ad,buffc,sizeof(buffc),0);
+                        printf("Cient : %s\n",buffc);
+                        
+                    }
+                }
+                else
+                {
+                    while(1)
+                    {
+                        bzero(&buff,sizeof(buff));
+                        printf("Enter Text...");
+                        fgets(buff,100,stdin);
+                        send(ad,buff,sizeof(buff),0);
+                        printf("Msg Sent..\n");
+                            
+                    }
+                }
+            
+        </p>
+        <p class="head">7-Client</p>
+        <p class="code">
+           
+                
+            int main()
+            {
+                int sd,cd;
+                char buff[1024];
+                char buffs[1024];
+                pid_t cpid ;
+                struct sockaddr_in servaddr,cliaddr;
+                bzero(&servaddr,sizeof(servaddr));
+                socklen_t clilen = sizeof(cliaddr);
+                
+                servaddr.sin_family = AF_INET;
+                servaddr.sin_port = htons(3300);
+                servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+                
+                sd = socket(AF_INET,SOCK_STREAM,0);
+                printf("Socket created\n");
+                
+                cd = connect(sd,(struct sockaddr*)&servaddr,sizeof(servaddr));
+                printf("connected to server \n");
+                
+                cpid = fork();
+                if(cpid==0)
+                {
+                    while(1)
+                    {
+                        bzero(&buff,sizeof(buff));
+                        printf("Enter text..");
+                        fgets(buff,100,stdin);
+                        send(sd,buff,sizeof(buff),0);
+                        printf("Msg sent..\n");
+                    }
+                }
+                else
+                {
+                    while(1)
+                    {
+                        bzero(&buffs,sizeof(buff));
+                        recv(sd,buffs,sizeof(buffs),0);
+                        printf("Server : %s\n",buffs);
+                    }
+                }
+                return 0;
+            }
+            
+                
+        </p>
+        
+            
+            
+            
+            
+    </div>
+
+    <div class="cont" id="sec8">
+        <p class="head">Exp 8 - Server</p>
+        <p class="code">
+            
+            int main()
+            {
+                int sd,bd,ad;
+                char buff[1024];
+                char file[1024];
+                socklen_t clilen;
+                FILE *fp;
+                
+                struct sockaddr_in servaddr,cliaddr;
+                bzero(&servaddr,sizeof(servaddr));
+                clilen = sizeof(cliaddr);
+                
+                servaddr.sin_family = AF_INET;
+                servaddr.sin_port = htons(3400);
+                servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+                
+                sd = socket(AF_INET,SOCK_STREAM,0);
+                printf("Socket Created\n");
+                
+                bd = bind(sd,(struct sockaddr*)&servaddr,sizeof(servaddr));
+                printf("Binding done...\n");
+                
+                listen(sd,5);
+                printf("Listening...\n");
+                
+                ad = accept(sd,(struct sockaddr*)&cliaddr,&clilen);
+                
+                while(1)
+                {
+                    bzero(&buff,sizeof(buff));
+                    bzero(file,sizeof(file));
+                    recv(ad,buff,sizeof(buff),0);
+                    printf("Filename received\n");
+                    fp = fopen(buff,"r");
+                    fread(file,sizeof(file),1,fp);
+                    send(ad,file,sizeof(file),0);
+                    
+                }
+                return 0;
+            }
+            
+        </p>
+        <p class="head">8-Client</p>
+        <p class="code">
+           
+                
+            int main()
+            {
+                int sd,cd;
+                char buff[1024];
+                char file[1024];
+                
+                FILE *fp;
+                
+                struct sockaddr_in servaddr,cliaddr;
+                bzero(&servaddr,sizeof(servaddr));
+                
+                servaddr.sin_family = AF_INET;
+                servaddr.sin_port = htons(3400);
+                servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+                
+                sd = socket(AF_INET,SOCK_STREAM,0);
+                printf("Socket Created\n");
+                
+                cd = connect(sd,(struct sockaddr*)&servaddr,sizeof(servaddr));
+                printf("Connected..\n");
+                
+                while(1)
+                {
+                    printf("Enter Filename\n");
+                    fgets(buff,1000,stdin);
+                    send(sd,buff,sizeof(buff),0);
+                    recv(sd,&file,sizeof(file),0);
+                    printf("Data received is ... %s",file);
+                }
+                
+                return 0;
+            }
+            
+                
+        </p>
+        
+            
+            
+            
+            
+    </div>
+
+    <div class="cont" id="sec9">
+        <p class="head">Exp 9 - Server</p>
+        <p class="code">
+            
+            int main()
+            {
+            
+                int serverDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
+                int size;
+                char buffer[MAX], message[] = "Command Successfully executed !";
+                struct sockaddr_in clientAddress, serverAddress;
+            
+                socklen_t clientLength = sizeof(clientAddress);
+            
+                bzero(&serverAddress, sizeof(serverAddress));
+                serverAddress.sin_family = AF_INET;
+                serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+                serverAddress.sin_port = htons(9976);
+            
+                bind(serverDescriptor, (struct sockaddr *)&serverAddress, sizeof(serverAddress));
+                while (1)
+                {
+                    bzero(buffer, sizeof(buffer));
+                    recvfrom(serverDescriptor, buffer, sizeof(buffer), 0, (struct sockaddr *)&clientAddress, &clientLength);
+                    system(buffer);
+                    printf("Command Executed ... %s ", buffer);
+                    sendto(serverDescriptor, message, sizeof(message), 0, (struct sockaddr *)&clientAddress, clientLength);
+                }
+                close(serverDescriptor);
+                return 0;
+            }
+            
+            
+        </p>
+        <p class="head">9-Client</p>
+        <p class="code">
+           
+                
+            int main()
+            {
+                int serverDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
+                char buffer[MAX], message[MAX];
+                struct sockaddr_in cliaddr, serverAddress;
+                socklen_t serverLength = sizeof(serverAddress);
+            
+                bzero(&serverAddress, sizeof(serverAddress));
+                serverAddress.sin_family = AF_INET;
+                serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+                serverAddress.sin_port = htons(9976);
+            
+                bind(serverDescriptor, (struct sockaddr *)&serverAddress, sizeof(serverAddress));
+            
+                while (1)
+                {
+                    printf("\nCOMMAND FOR EXECUTION ... ");
+                    fgets(buffer, sizeof(buffer), stdin);
+                    sendto(serverDescriptor, buffer, sizeof(buffer), 0, (struct sockaddr *)&serverAddress, serverLength);
+                    printf("\nData Sent !");
+                    recvfrom(serverDescriptor, message, sizeof(message), 0, (struct sockaddr *)&serverAddress, &serverLength);
+                    printf("UDP SERVER : %s", message);
+                }
+                return 0;
+            }
+            
+            
+                
+                
+        </p>
+        
+            
+            
+            
+            
+    </div>
+
+    <div class="cont" id="sec10">
+        <p class="head">Exp 10 - Server</h1>
+        <p class="code">
+            
+            #include<sys/types.h>
+            #include<sys/socket.h>
+            #include<net/if_arp.h>
+            #include<sys/ioctl.h>
+            #include<stdio.h>
+            #include<string.h>
+            #include<unistd.h>
+            #include<math.h>
+            #include<complex.h>
+            #include<arpa/inet.h>
+            #include<netinet/in.h>
+            #include<netinet/if_ether.h>
+            #include<net/ethernet.h>
+            #include<stdlib.h>
+            int main()
+            {
+             struct sockaddr_in sin={0};
+             struct arpreq myarp={{0}};
+             unsigned char *ptr;
+             int sd;
+             sin.sin_family=AF_INET;
+             printf("Enter IP address: ");
+             char ip[20];
+             scanf("%s", ip); 
+             memcpy(&myarp.arp_pa,&sin,sizeof(myarp.arp_pa));
+             strcpy(myarp.arp_dev,"echo");
+             sd=socket(AF_INET,SOCK_DGRAM,0);
+             printf("\nSend ARP request\n"); 
+            ptr=&myarp.arp_pa.sa_data[0];
+             printf("Received ARP Reply\n");
+             printf("\nMAC Address for '%s' : ",ip);
+             printf("%p:%p:%p:%p:%p:%p\n",ptr,(ptr+1),(ptr+2),(ptr+3),(ptr+4),(ptr+5));
+             return 0;
+            }
+        </p>
+    </div>
+
+
+</body>
+</html>
